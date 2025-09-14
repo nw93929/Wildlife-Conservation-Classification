@@ -1,0 +1,8 @@
+model, epochs, loss, learningrate, weightdecay, earlystop, baselayers, customlayers, scheduler, accuracy, precision, recall, f1, competitionscore
+EfficientNetB4, 1, logloss, 0.001, 0, patienceinfdelta0, 390, linear100-relu-dropout.1-linear, lambdalr, 0.8622,0.8643, 0.8622, 0.8603, 1.5508
+EfficientNetB4, 10, logloss, 0.001, 0, patienceinfdelta0, 390, linear100-relu-dropout.1-linear, lambdalr, 0.8735, 0.8709, 0.8735, 0.8710, 2.5571
+EfficientNetB4, 5, logloss, 0.001, 0, patienceinfdelta0, 390, linear100-relu-batchnorm1d-dropout.1-linear, lambdalr, 0.8713, 0.8687, 0.8713, 0.8694, 2.6750
+EfficientNetB4, 5, logloss, 0.0005, 0.0001, patienceinfdelta0, 390, linear256-relu-batchnorm1d-dropout.1-linear, lambdalr, 0.8645, 0.8612, 0.8645, 0.8615, 2.3182
+EfficientNetB4, 5, logloss, 0.0005, 0.0001, patience3delta0, 390, linear256-relu-batchnorm1d-dropout.1-linear, lambdalr, 
+
+
