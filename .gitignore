@@ -1,3 +1,8 @@
 /modellog.csv
 /submission_df.csv
+/.claude
+/.vscode
+/wandb
 *.pth
+*.pt
+.env
