@@ -26,6 +26,8 @@ Camera traps generate massive volumes of images that overwhelm manual review. Th
 - **Binary Classifier** — separate ConvNeXt model trained to distinguish blank vs animal, reducing false positives from low-confidence species predictions
 - **Weighted Ensemble** — 5 models combined with weights proportional to validation performance (1/val_loss)
 - **Out-of-Fold Evaluation** — unbiased accuracy metrics using predictions from models that never saw that data
+- **Temperature Scaling** — post-hoc calibration via scalar T learned on OOF logits (minimizes NLL); applied to both species and binary models before test inference
+- **Test-Time Augmentation (TTA)** — 4 deterministic augmentations per image (original, h-flip, v-flip, h+v flip); soft-voted before ensemble weighting
 - **Two-Phase Training** — frozen backbone for epochs 1–4, then fine-tuning at epoch 5 with differential learning rates (10x lower for backbone)
 - **Gradient Accumulation** — 2 steps over batch size 8 for effective batch size of 16
 - **Class-Weighted Loss** — inverse-frequency weighting so rare species like `hog` get proportionally more gradient signal
@@ -96,10 +98,11 @@ Camera traps generate massive volumes of images that overwhelm manual review. Th
    - All metrics logged to W&B per fold
 4. **Binary Model — Per-Fold Training** — same schedule, blank vs animal labels
 5. **Ensemble Assembly** — load all 5 fold models (species + binary), compute weights from validation loss
-6. **OOF Evaluation** — each sample predicted by the fold that never trained on it
-7. **Threshold Optimization** — joint grid search over binary threshold and confidence threshold to maximize weighted F1
-8. **Test Inference** — two-stage: binary ensemble gates blank/animal, species ensemble classifies animals; soft probability blending applied before submission
-9. **Submission** — export calibrated probabilities to CSV
+6. **OOF Evaluation** — each sample predicted by the fold that never trained on it; raw logits saved for calibration
+7. **Temperature Scaling** — learn scalar T per model (species + binary) by minimizing NLL on OOF logits; calibrated probs replace OOF outputs for all downstream steps
+8. **Threshold Optimization** — joint grid search over binary threshold and confidence threshold to maximize weighted F1
+9. **Test Inference** — two-stage with TTA: for each image, 4 augmented views × 5 fold models averaged per stage; temperature applied before softmax; soft probability blending for submission
+10. **Submission** — export calibrated probabilities to CSV
 
 ## Results (Updated Every Submission)
 
@@ -123,6 +126,7 @@ Evaluated using Out-of-Fold predictions across the full 16,488 training samples.
 - timm (PyTorch Image Models)
 - torchvision
 - scikit-learn
+- scipy
 - pandas
 - matplotlib
 - PIL / Pillow
