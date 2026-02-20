@@ -1,5 +1,5 @@
-/modellog.csv
-/submission_df.csv
+modellog.csv
+    submission_df.csv
 /.claude
 /.vscode
 /wandb
